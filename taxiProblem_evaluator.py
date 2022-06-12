@@ -15,15 +15,14 @@ from helpers.config_simulations import get_config
 import random
 import numpy as np
 
-# config, _ = get_config()
-# train_causal = config.train_scm
+config, _ = get_config()
+train_causal = config.train_scm
 
-# """Environment Init and Config"""
-# config.train = not config.eval
+"""Environment Init and Config"""
+config.train = not config.eval
 
 #---------------------------------------------------------------
 env = gym.make("Taxi-v3")
-env.render()
 
 action_size = env.action_space.n
 print("Action size ", action_size)
@@ -47,6 +46,7 @@ decay_rate = 0.01             # Exponential decay rate for exploration prob
 replay_obs = []
 replay_act = []
 for episode in range(total_episodes):
+    print("episode: ", episode)
     # Reset the environment
     state = env.reset()
     step = 0
@@ -93,13 +93,18 @@ for episode in range(total_episodes):
             replay_obs = obs_set
             replay_act = action_set
         else:
-            replay_obs.extend(obs_set)
+            replay_obs.append(obs_set)
             replay_act.extend(action_set)
+
+        act_array = np.array(replay_act)
+        obs_array = np.array(replay_obs)
+        print("replay_act shape:", act_array.shape)
+        print("replay_obs shape:", obs_array.shape)
                                 
-        # if len(replay_obs) >= config.data_size:
+        if len(replay_obs) >= config.data_size:
 
             """generate why and why not explanations for a given state index of the batch data (here 0) and save to file"""
-            # scm.process_explanations(replay_obs, replay_act, config, 0, step)    
+            scm.process_explanations(replay_obs, replay_act, config, 0, step)    
             replay_obs = []
             replay_act = []
 

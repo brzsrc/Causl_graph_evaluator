@@ -55,10 +55,13 @@ def initialize_structeral_equations(config):
                 uniqueu_functions[(edge[1], action_on_edge)].add(pred)     
             
 
+    print(uniqueu_functions)
     for key in uniqueu_functions:
         if key[1] in action_influence_dataset:
             x_data = []
             for x_feature in uniqueu_functions[key]:
+                print(x_feature)
+                print(action_influence_dataset[key[1]]['state'])
                 x_data.append(np.array(action_influence_dataset[key[1]]['state'])[:,x_feature])
 
             x_feature_cols = [tf.feature_column.numeric_column(str(i)) for i in range(len(x_data))]  
@@ -94,6 +97,8 @@ def process_explanations(state_set, action_set, config, state_idx, agent_step, n
     if config.scm_mode == 'train':
         print('starting scm training-------')          
         for i in range(len(action_set)):
+            # print("action set:", action_set)
+            # print("state set:", state_set)
 
             if action_set[i] in action_influence_dataset:
                 action_influence_dataset[action_set[i]]['state'].append(state_set[i])
