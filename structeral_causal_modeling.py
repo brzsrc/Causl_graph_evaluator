@@ -1,50 +1,23 @@
 import tensorflow as tf
-import os
 import numpy as np
 import pandas as pd
 import networkx as nx
-import matplotlib.pyplot as plt
-import matplotlib
-import logging
 import explanation_templates as explanations
 
 
-
-#starcraft causal graph
 graph_matrix = np.array([
-    [0, 1, 1, 0, 0, 0, 0, 0, 0], #0
-    [0, 0, 0, 1, 0, 0, 0, 0, 0], #1
-    [0, 0, 0, 1, 0, 0, 0, 0, 0], #2
-    [0, 0, 0, 0, 0, 0, 0, 1, 1], #3
-    [0, 0, 0, 0, 0, 0, 0, 1, 1], #4
-    [0, 0, 0, 0, 0, 0, 0, 1, 1], #5
-    [0, 0, 0, 0, 0, 0, 0, 1, 1], #6
-    [0, 0, 0, 0, 0, 0, 0, 0, 0], #7
-    [0, 0, 0, 0, 0, 0, 0, 0, 0], #8  
-    ])
+ [0, 1, 0, 0],
+ [0, 0, 0, 0],
+ [1, 1, 0, 1],
+ [1, 1, 0, 0]])
 
 
-"""
-action numbers and names, taken from actions.py in pysc2:
-
-build_supply_depot = 91
-build_barracks = 42
-train_marine = 477
-attack = 13
-
-"""
-actionset = (91, 42, 477, 13)
+actionset = (4, 5, 6)
 action_matrix = np.array([
-    [0, 91, 42, 0, 0, 0, 0, 0, 0], #0
-    [0, 0, 0, 477, 0, 0, 0, 0, 0], #1
-    [0, 0, 0, 477, 0, 0, 0, 0, 0], #2
-    [0, 0, 0, 0, 0, 0, 0, 13, 13], #3
-    [0, 0, 0, 0, 0, 0, 0, 13, 13], #4
-    [0, 0, 0, 0, 0, 0, 0, 13, 13], #5
-    [0, 0, 0, 0, 0, 0, 0, 13, 13], #6
-    [0, 0, 0, 0, 0, 0, 0, 0, 0], #7
-    [0, 0, 0, 0, 0, 0, 0, 0, 0], #8  
-    ])    
+ [0, 6, 0, 0],
+ [0, 0, 0, 0],
+ [5, 5, 0, 4],
+ [6, 5, 0, 0]])    
 
 action_influence_dataset = {}
 structeral_equations = {}
@@ -133,24 +106,24 @@ def process_explanations(state_set, action_set, config, state_idx, agent_step, n
         initialize_structeral_equations(config)
         train_structeral_equations()
         print('end scm training-------')
-    else:
-        uniqueu_actions = list(actionset)    
-        for action in uniqueu_actions:
-            action_influence_dataset[action] = {'state' : state_set, 'next_state': next_state_set}
+    # else:
+    #     uniqueu_actions = list(actionset)    
+    #     for action in uniqueu_actions:
+    #         action_influence_dataset[action] = {'state' : state_set, 'next_state': next_state_set}
 
-        initialize_structeral_equations(config)
+    #     initialize_structeral_equations(config)
 
-        why_explanations = {}
-        why_not_explanations = {}
-        for action in actionset:
-            why_explanations[(agent_step, action)] = {'state': state_set[state_idx], 'why_exps': generate_why_explanations(state_set[state_idx], action, state_idx)}
-            poss_counter_actions = set(actionset).difference({action})
-            for counter_action in poss_counter_actions:
-                why_not_explanations[(agent_step, action, counter_action)] = {'state': state_set[state_idx], 
-                                                        'why_not_exps': generate_counterfactual_explanations(state_set[state_idx], action, counter_action, state_idx)}
+    #     why_explanations = {}
+    #     why_not_explanations = {}
+    #     for action in actionset:
+    #         why_explanations[(agent_step, action)] = {'state': state_set[state_idx], 'why_exps': generate_why_explanations(state_set[state_idx], action, state_idx)}
+    #         poss_counter_actions = set(actionset).difference({action})
+    #         for counter_action in poss_counter_actions:
+    #             why_not_explanations[(agent_step, action, counter_action)] = {'state': state_set[state_idx], 
+    #                                                     'why_not_exps': generate_counterfactual_explanations(state_set[state_idx], action, counter_action, state_idx)}
 
-        pd.DataFrame.from_dict(data=why_explanations, orient='index').to_csv('why_explanations.csv', mode='a', header=False)
-        pd.DataFrame.from_dict(data=why_not_explanations, orient='index').to_csv('why_not_explanations.csv', mode='a', header=False)
+    #     pd.DataFrame.from_dict(data=why_explanations, orient='index').to_csv('why_explanations.csv', mode='a', header=False)
+    #     pd.DataFrame.from_dict(data=why_not_explanations, orient='index').to_csv('why_not_explanations.csv', mode='a', header=False)
 
     
     
