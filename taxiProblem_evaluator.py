@@ -46,7 +46,7 @@ decay_rate = 0.01             # Exponential decay rate for exploration prob
 replay_obs = []
 replay_act = []
 for episode in range(total_episodes):
-    print("episode: ", episode)
+    # print("episode: ", episode)
     # Reset the environment
     state = env.reset()
     step = 0
@@ -69,9 +69,9 @@ for episode in range(total_episodes):
         
         # Take the action (a) and observe the outcome state(s') and reward (r)
         new_state, reward, done, info = env.step(action)
-
+        new_taxi_row, new_taxi_col, new_pass_idx, new_dest_idx = env.decode(new_state)
         action_set.append(action)
-        obs_set.append(new_state)
+        obs_set.append([new_taxi_row, new_taxi_col, new_pass_idx, new_dest_idx])
 
         # Update Q(s,a):= Q(s,a) + lr [R(s,a) + gamma * max Q(s',a') - Q(s,a)]
         qtable[state, action] = qtable[state, action] + learning_rate * (reward + gamma * 
@@ -93,13 +93,18 @@ for episode in range(total_episodes):
             replay_obs = obs_set
             replay_act = action_set
         else:
-            replay_obs.append(obs_set)
+            replay_obs.extend(obs_set)
             replay_act.extend(action_set)
 
-        act_array = np.array(replay_act)
-        obs_array = np.array(replay_obs)
-        print("replay_act shape:", act_array.shape)
-        print("replay_obs shape:", obs_array.shape)
+        # act_array = np.array(action_set)
+        # obs_array = np.array(obs_set)
+        # print("act shape:", act_array.shape)
+        # print("obs shape:", obs_array.shape)
+
+        # act_array = np.array(replay_act)
+        # obs_array = np.array(replay_obs)
+        # print("replay_act shape:", act_array.shape)
+        # print("replay_obs shape:", obs_array.shape)
                                 
         if len(replay_obs) >= config.data_size:
 

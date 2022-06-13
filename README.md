@@ -24,8 +24,9 @@ $ python main.py test1 --map Simple64 --res 64 --envs 1 --max_windows 1 --nhwc -
 python taxiProblem_evaluator.py --data_size 2000 --scm_mode train --scm_regressor lr
 ```
 Please see config_simulations.py for other configurations. Before training remove pre-trained SCM's in scm_model directory
--To generate explanations
 
+
+-To generate explanations
 ```sh
 $ python main.py test1 --map Simple64 --res 64 --envs 1 --max_windows 1 --nhwc --ow --data_size 16 --scm_mode infer --scm_regressor lr
 ```

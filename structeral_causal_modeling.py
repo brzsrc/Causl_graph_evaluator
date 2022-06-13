@@ -55,13 +55,13 @@ def initialize_structeral_equations(config):
                 uniqueu_functions[(edge[1], action_on_edge)].add(pred)     
             
 
-    print(uniqueu_functions)
+    # print(uniqueu_functions)
     for key in uniqueu_functions:
         if key[1] in action_influence_dataset:
             x_data = []
             for x_feature in uniqueu_functions[key]:
-                print(x_feature)
-                print(action_influence_dataset[key[1]]['state'])
+                # print(x_feature)
+                # print(action_influence_dataset[key[1]]['state'])
                 x_data.append(np.array(action_influence_dataset[key[1]]['state'])[:,x_feature])
 
             x_feature_cols = [tf.feature_column.numeric_column(str(i)) for i in range(len(x_data))]  
@@ -95,9 +95,11 @@ def process_explanations(state_set, action_set, config, state_idx, agent_step, n
         state_set = state_set[:-1]
 
     if config.scm_mode == 'train':
-        print('starting scm training-------')          
+        print('starting scm training-------')  
+        # print(action_set)        
         for i in range(len(action_set)):
-            # print("action set:", action_set)
+            # print(action_set)
+            # print("action set[i]:", action_set[i])
             # print("state set:", state_set)
 
             if action_set[i] in action_influence_dataset:
@@ -111,24 +113,24 @@ def process_explanations(state_set, action_set, config, state_idx, agent_step, n
         initialize_structeral_equations(config)
         train_structeral_equations()
         print('end scm training-------')
-    # else:
-    #     uniqueu_actions = list(actionset)    
-    #     for action in uniqueu_actions:
-    #         action_influence_dataset[action] = {'state' : state_set, 'next_state': next_state_set}
+    else:
+        uniqueu_actions = list(actionset)    
+        for action in uniqueu_actions:
+            action_influence_dataset[action] = {'state' : state_set, 'next_state': next_state_set}
 
-    #     initialize_structeral_equations(config)
+        initialize_structeral_equations(config)
 
-    #     why_explanations = {}
-    #     why_not_explanations = {}
-    #     for action in actionset:
-    #         why_explanations[(agent_step, action)] = {'state': state_set[state_idx], 'why_exps': generate_why_explanations(state_set[state_idx], action, state_idx)}
-    #         poss_counter_actions = set(actionset).difference({action})
-    #         for counter_action in poss_counter_actions:
-    #             why_not_explanations[(agent_step, action, counter_action)] = {'state': state_set[state_idx], 
-    #                                                     'why_not_exps': generate_counterfactual_explanations(state_set[state_idx], action, counter_action, state_idx)}
+        why_explanations = {}
+        why_not_explanations = {}
+        for action in actionset:
+            why_explanations[(agent_step, action)] = {'state': state_set[state_idx], 'why_exps': generate_why_explanations(state_set[state_idx], action, state_idx)}
+            poss_counter_actions = set(actionset).difference({action})
+            for counter_action in poss_counter_actions:
+                why_not_explanations[(agent_step, action, counter_action)] = {'state': state_set[state_idx], 
+                                                        'why_not_exps': generate_counterfactual_explanations(state_set[state_idx], action, counter_action, state_idx)}
 
-    #     pd.DataFrame.from_dict(data=why_explanations, orient='index').to_csv('why_explanations.csv', mode='a', header=False)
-    #     pd.DataFrame.from_dict(data=why_not_explanations, orient='index').to_csv('why_not_explanations.csv', mode='a', header=False)
+        pd.DataFrame.from_dict(data=why_explanations, orient='index').to_csv('why_explanations.csv', mode='a', header=False)
+        pd.DataFrame.from_dict(data=why_not_explanations, orient='index').to_csv('why_not_explanations.csv', mode='a', header=False)
 
     
     
