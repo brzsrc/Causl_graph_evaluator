@@ -102,16 +102,6 @@ for episode in range(total_episodes):
         else:
             replay_obs.extend(obs_set)
             replay_act.extend(action_set)
-
-        # act_array = np.array(action_set)
-        # obs_array = np.array(obs_set)
-        # print("act shape:", act_array.shape)
-        # print("obs shape:", obs_array.shape)
-
-        # act_array = np.array(replay_act)
-        # obs_array = np.array(replay_obs)
-        # print("replay_act shape:", act_array.shape)
-        # print("replay_obs shape:", obs_array.shape)
                                 
         if len(replay_obs) >= config.data_size:
 
