@@ -234,10 +234,21 @@ def get_minimal_contrastive_tuples(actual_chain, counterfactual_chain, actual_st
 
     actual_minimally_complete_tuple = get_minimally_complete_tuples(actual_chain, actual_state)
     counterfactual_minimally_complete_tuple = get_minimally_complete_tuples(counterfactual_chain, counterfactual_state)
-    min_tuples = np.sum(np.array([list(k) for k in list(actual_minimally_complete_tuple.values())]))
+    # print(list(actual_minimally_complete_tuple.values()))
+    # min_tuples = np.sum(np.array([list(k) for k in list(actual_minimally_complete_tuple.values())]))
+    min_tuples = filter(len, [tuple(k) for k in list(actual_minimally_complete_tuple.values())])
+    # min_tuples = [tuple(k) for k in list(actual_minimally_complete_tuple.values())]
+    # print("min_tuples:", min_tuples)
+    # if(min_tuples):
+    min_tuples = [k[0] for k in min_tuples]
+    # print("min_tuples2:", min_tuples)
     tuple_states = set([k[0] for k in min_tuples])
-
-    counter_min_tuples = np.sum(np.array([list(k) for k in list(counterfactual_minimally_complete_tuple.values())]))
+    # print("tuple_states: ", tuple_states)
+    # counter_min_tuples = np.sum(np.array([list(k) for k in list(counterfactual_minimally_complete_tuple.values())]))
+    counter_min_tuples = filter(len, [tuple(k) for k in list(counterfactual_minimally_complete_tuple.values())])
+    # counter_min_tuples = [tuple(k) for k in list(counterfactual_minimally_complete_tuple.values())]
+    counter_min_tuples = [k[0] for k in counter_min_tuples]
+    # print(counter_min_tuples)
     counter_tuple_states = set([k[0] for k in counter_min_tuples])
     counter_tuple_states.difference_update(tuple_states)
 
@@ -246,6 +257,12 @@ def get_minimal_contrastive_tuples(actual_chain, counterfactual_chain, actual_st
                         'counterfactual': {k: counterfactual_state[k] for k in counter_tuple_states},
                         'reward': {k[0]: k[1] for k in actual_minimally_complete_tuple['reward']}
                         }
+    # else:
+    #     contrastive_tuple = {
+    #                     'actual': {},
+    #                     'counterfactual': {},
+    #                     'reward': {}
+    #                     }
     return contrastive_tuple
 
 

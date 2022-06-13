@@ -31,3 +31,4 @@ Please see config_simulations.py for other configurations. Before training remov
 $ python main.py test1 --map Simple64 --res 64 --envs 1 --max_windows 1 --nhwc --ow --data_size 16 --scm_mode infer --scm_regressor lr
 ```
 
+python taxiProblem_evaluator.py  --data_size 16 --scm_mode infer --scm_regressor lr
