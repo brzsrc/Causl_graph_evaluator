@@ -33,7 +33,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 # 
 # CartPole environment is very simple. It has discrete action space (2) and 4 dimensional state space. 
 env = gym.make('CartPole-v1')
-env.reset(seed=0)
+env.reset()
 
 print('observation space:', env.observation_space)
 print('action space:', env.action_space)
@@ -83,6 +83,8 @@ def reinforce(policy, optimizer, n_episodes=1000, max_t=1000, gamma=1.0, print_e
             state, reward, done, _ = env.step(action)
             rewards.append(reward)
 
+            if(action == 0):
+                action = 2
             action_set.append(action)
             obs_set.append(state.tolist() + [reward])
 
@@ -120,8 +122,8 @@ def reinforce(policy, optimizer, n_episodes=1000, max_t=1000, gamma=1.0, print_e
                 replay_obs.extend(obs_set)
                 replay_act.extend(action_set)
 
-        act_array = np.array(action_set)
-        obs_array = np.array(obs_set)
+        # act_array = np.array(action_set)
+        # obs_array = np.array(obs_set)
         # print("act shape:", act_array.shape)
         # print("obs shape:", obs_array.shape)
 

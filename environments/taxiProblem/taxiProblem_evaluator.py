@@ -36,7 +36,7 @@ state_size = env.observation_space.n
 print("State size ", state_size)
 qtable = np.zeros((state_size, action_size))
 
-total_episodes = 5000        # Total episodes
+total_episodes = 2000        # Total episodes
 max_steps = 99                # Max steps per episode
 learning_rate = 0.7           # Learning rate
 gamma = 0.618                 # Discounting rate
@@ -76,7 +76,11 @@ for episode in range(total_episodes):
         # Take the action (a) and observe the outcome state(s') and reward (r)
         new_state, reward, done, info = env.step(action)
         new_taxi_row, new_taxi_col, new_pass_idx, new_dest_idx = env.decode(new_state)
-        action_set.append(action)
+
+        action_ = action
+        if action != 4 and action != 5:
+            action_ = 6
+        action_set.append(action_)
         taxi_loc = encode_location(new_taxi_row, new_taxi_col, 5)
         obs_set.append([taxi_loc, new_pass_idx, new_dest_idx, reward])
 
@@ -94,21 +98,19 @@ for episode in range(total_episodes):
     # Reduce epsilon (because we need less and less exploration)
     epsilon = min_epsilon + (max_epsilon - min_epsilon)*np.exp(-decay_rate*episode) 
 
-    # if train_causal:
-    if 1 :
-        if len(replay_obs) < 1:
-            replay_obs = obs_set
-            replay_act = action_set
-        else:
-            replay_obs.extend(obs_set)
-            replay_act.extend(action_set)
-                                
-        if len(replay_obs) >= config.data_size:
+    if len(replay_obs) < 1:
+        replay_obs = obs_set
+        replay_act = action_set
+    else:
+        replay_obs.extend(obs_set)
+        replay_act.extend(action_set)
+                            
+    if len(replay_obs) >= config.data_size:
 
-            """generate why and why not explanations for a given state index of the batch data (here 0) and save to file"""
-            scm.process_explanations(replay_obs, replay_act, config, 0, step)    
-            replay_obs = []
-            replay_act = []
+        """generate why and why not explanations for a given state index of the batch data (here 0) and save to file"""
+        scm.process_explanations(replay_obs, replay_act, config, 0, step)    
+        replay_obs = []
+        replay_act = []
 
 
 env.close()

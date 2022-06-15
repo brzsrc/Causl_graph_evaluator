@@ -123,10 +123,10 @@ def process_explanations(state_set, action_set, config, state_idx, agent_step, n
         why_explanations = {}
         why_not_explanations = {}
         for action in actionset:
-            why_explanations[(agent_step, action)] = {'state': state_set[state_idx], 'why_exps': generate_why_explanations(state_set[state_idx], action, state_idx)}
+            why_explanations[(agent_step, action)] = {'state': state_set[state_idx], 'actual_action': action_set[state_idx], 'why_exps': generate_why_explanations(state_set[state_idx], action, state_idx)}
             poss_counter_actions = set(actionset).difference({action})
             for counter_action in poss_counter_actions:
-                why_not_explanations[(agent_step, action, counter_action)] = {'state': state_set[state_idx], 
+                why_not_explanations[(agent_step, action, counter_action)] = {'state': state_set[state_idx], 'actual_action': action_set[state_idx],
                                                         'why_not_exps': generate_counterfactual_explanations(state_set[state_idx], action, counter_action, state_idx)}
 
         pd.DataFrame.from_dict(data=why_explanations, orient='index').to_csv('why_explanations.csv', mode='a', header=False)

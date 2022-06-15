@@ -251,8 +251,11 @@ def dqn(n_episodes=350, max_t=1000, eps_start=1.0, eps_end=0.01, eps_decay=0.995
             agent.step(state, action, reward, next_state, done)
             state = next_state
             score += reward
-            action_set.append(action)
-            obs_set.append(state.tolist() + [reward])
+            action_ = action
+            if(action == 0):
+                action_ = 5
+            action_set.append(action_)
+            obs_set.append(state.tolist()[0:6] + [reward])
             if done:
                 break 
         scores_window.append(score)       # save most recent score
